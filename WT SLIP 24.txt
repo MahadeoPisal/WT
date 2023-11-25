@@ -1,0 +1,39 @@
+Write a PHP program to read two file names from user and append content of first file into
+second file.
+---------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Append</title>
+</head>
+<body>
+    <form action="24-filename.php" method="post">
+        <label for="firstFile">Enter the name of the first file:</label><br>
+        <input type="text" id="firstFile" name="firstFile"><br>
+        
+        <label for="secondFile">Enter the name of the second file:</label><br>
+        <input type="text" id="secondFile" name="secondFile"><br>
+        
+        <input type="submit" value="Append Files">
+    </form>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   
+    $firstFileName = $_POST["firstFile"];
+    $secondFileName = $_POST["secondFile"];
+
+    if (file_exists($firstFileName) && file_exists($secondFileName)) {
+   
+        $contentFirstFile = file_get_contents($firstFileName);
+
+        file_put_contents($secondFileName, $contentFirstFile, FILE_APPEND);
+
+        echo "Content from '$firstFileName' has been appended to '$secondFileName'.";
+    } else {
+        echo "One or both of the files do not exist.";
+    }
+}
+?>

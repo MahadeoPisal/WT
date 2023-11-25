@@ -1,0 +1,43 @@
+Q.1) Write a PHP program to read two file names from user and copy the content of first file into
+second file.
+----------------------------------------------------------------------------------------------------
+<!-- Write a PHP program to read two file names from user and Copy content of first file into
+second file. -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Copy Files</title>
+</head>
+<body>
+    <form action="27-filename-copy.php" method="post">
+        <label for="sourceFile">Source File:</label>
+        <input type="text" name="sourceFile" id="sourceFile" required><br>
+
+        <label for="destinationFile">Destination File:</label>
+        <input type="text" name="destinationFile" id="destinationFile" required><br>
+
+        <input type="submit" value="Copy File">
+    </form>
+</body>
+</html>
+--------------------------------------------------------------------------------------------------------
+<?php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
+   $sourceFileName = $_POST["sourceFile"];
+    $destinationFileName = $_POST["destinationFile"];
+
+    
+    if (file_exists($sourceFileName)) {
+        
+        $fileContent = file_get_contents($sourceFileName);
+
+       
+        file_put_contents($destinationFileName, $fileContent);
+
+        echo "File copied successfully.\n";
+    } else {
+        echo "Source file does not exist.\n";
+    }
+}
+?>

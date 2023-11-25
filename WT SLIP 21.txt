@@ -1,0 +1,65 @@
+Q.1) Create an array of 15 high temperatures, approximating the weather for a spring month,
+then find the average high temp, the five warmest high temps Display the result on the browser.
+[15]-------------------NAME CHANGE($$$$$) CALL---------------------
+-------------------------------------------------------------------------------------------------------
+<html>
+<head>
+    <title>Ass4 SetA 1</title>
+</head>
+<body>
+    <form action="$$$$$$$$$.php">
+        <h4>30 high temperatures spring month data (in Fahrenheit)</h4>
+        <p>
+            68, 70, 72, 58, 60, 79, 82, 73, 75, 77, 73, 58, 63, 79, 78,
+            68, 72, 73, 80, 79, 68, 72, 75, 77, 73, 78, 82, 85, 89, 83
+        </p>
+        <input type="radio" name="op" value="1">Average high Temperature </input> <br>
+        <input type="radio" name="op" value="2">Warmest high Temperature </input> <br>
+        <input type="radio" name="op" value="3">Coolest high Temperature </input> <br>
+    
+        <input type="Submit" value="Submit">
+    </form>
+</body>
+</html>
+--------------------------------------------------
+<?php
+    
+    $temp = array(
+        68, 70, 72, 58, 60, 79, 82, 73, 75, 77, 73, 58, 63, 79, 78,
+        68, 72, 73, 80, 79, 68, 72, 75, 77, 73, 78, 82, 85, 89, 83
+    );
+    $op = $_REQUEST['op'];
+    
+    $count = count($temp);
+    
+    $total = 0;
+    foreach ($temp as $h) { 
+        $total += $h;
+    }
+    
+    $avg = round($total / $count);
+
+    if($op == 1){
+        
+        echo "<p>The average high temperature for the month was $avg &deg;F.</p>\n";
+    }
+    else if($op == 2){
+        
+        rsort($temp);
+        
+        $topTemps = array_slice($temp, 0, 5);
+        echo "<p>The warmest five high temperatures were: <br />\n";
+        foreach ($topTemps as $t) {
+            echo "$t &deg;F <br> \n";
+        }
+    }
+   else if ($op == 3) {
+    sort($temp); 
+    $lowTemps = array_slice($temp, 0, 5); 
+    echo "<p>The coolest five high temperatures were: <br/>\n";
+    foreach ($lowTemps as $l) {
+        echo "$l&deg;F <br>\n";
+    }
+}
+   
+?>

@@ -1,0 +1,123 @@
+Q.1)Consider the following entities and their relationship. [15]
+Doctor ( doc_no, dname, address ,city ,area)
+Hospital (hosp_no, hname, hcity)
+Doctor-Hospital related with many-one relationship.
+Create a RDB in 3NF for above and solve the following.
+Using above database write a script in PHP to print the Doctor visiting to the Hospital in tabular
+format. Accept Hospital name from user.
+---------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Visits</title>
+</head>
+<body>
+    <h1>Find Doctors Visiting a Hospital</h1>
+    <form action="26-DR-hospital.php" method="post">
+        <label for="hospitalName">Enter Hospital Name:</label>
+        <input type="text" name="hospitalName" id="hospitalName" required>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
+-------------------------------------------------------------------------------------------------------
+<?php
+$host = "localhost";
+$port = "5432"; // The default PostgreSQL port
+$dbname = "postgres";
+$user = "postgres";
+$password = "6512";
+
+$conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
+
+if (!$conn) {
+    die("Connection failed: " . pg_last_error());
+}
+
+$hospitalName = $_POST['hospitalName'];
+
+$query = "SELECT d.dname, d.address, d.city, d.area
+          FROM Doctor d
+          INNER JOIN Visits v ON d.doc_no = v.doc_no
+          INNER JOIN Hospital h ON v.hosp_no = h.hosp_no
+          WHERE h.hname = $1";
+
+$stmt = pg_prepare($conn, "getDoctorsByHospital", $query);
+
+if (!$stmt) {
+    die("Error preparing statement: " . pg_last_error());
+}
+
+$result = pg_execute($conn, "getDoctorsByHospital", array($hospitalName));
+
+if (!$result) {
+    die("Error executing query: " . pg_last_error());
+}
+
+echo '<table border="1">';
+echo "<tr><th>Doctor Name</th><th>Address</th><th>City</th><th>Area</th></tr>";
+while ($row = pg_fetch_assoc($result)) {
+    echo "<tr>";
+    echo "<td>" . $row['dname'] . "</td>";
+    echo "<td>" . $row['address'] . "</td>";
+    echo "<td>" . $row['city'] . "</td>";
+    echo "<td>" . $row['area'] . "</td>";
+    echo "</tr>";
+}
+echo "</table>";
+
+
+pg_close($conn);
+?>
+------------------------------------------------------------------------------------------------
+
+
+-- Create the Doctor table
+CREATE TABLE Doctor (
+    doc_no SERIAL PRIMARY KEY,
+    dname VARCHAR(255),
+    address VARCHAR(255),
+    city VARCHAR(255),
+    area VARCHAR(255)
+);
+
+-- Create the Hospital table
+CREATE TABLE Hospital (
+    hosp_no SERIAL PRIMARY KEY,
+    hname VARCHAR(255),
+    hcity VARCHAR(255)
+);
+
+-- Create the Visits table to establish the many-to-one relationship
+CREATE TABLE Visits (
+    visit_id SERIAL PRIMARY KEY,
+    doc_no INT REFERENCES Doctor (doc_no),
+    hosp_no INT REFERENCES Hospital (hosp_no)
+);
+
+INSERT INTO Doctor (dname, address, city, area)
+VALUES ('Dr. John Smith', '123 Main Street', 'New York', 'Downtown'),
+       ('Dr. Jane Doe', '456 Elm Street', 'Los Angeles', 'Westside'),
+       ('Dr. David Johnson', '789 Oak Street', 'Chicago', 'Northside');
+
+INSERT INTO Hospital (hname, hcity)
+VALUES ('General Hospital', 'New York'),
+       ('City Medical Center', 'Los Angeles'),
+       ('Community Hospital', 'Chicago');
+
+
+-- Dr. John Smith visits General Hospital
+INSERT INTO Visits (doc_no, hosp_no)
+VALUES (1, 1);
+
+-- Dr. Jane Doe visits General Hospital
+INSERT INTO Visits (doc_no, hosp_no)
+VALUES (2, 1);
+
+-- Dr. Jane Doe also visits City Medical Center
+INSERT INTO Visits (doc_no, hosp_no)
+VALUES (2, 2);
+
+-- Dr. David Johnson visits Community Hospital
+INSERT INTO Visits (doc_no, hosp_no)
+VALUES (3, 3);

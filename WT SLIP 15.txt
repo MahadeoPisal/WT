@@ -1,0 +1,91 @@
+Q.1) Design a form to accept string from the user and perform the following operations
+a. To select first 5 words from the string
+b. Convert the given string to lowercase and then to Title case.
+c. Pad the given string with “*” from left and right both the sides.
+d. Remove the leading whitespaces from the given string.
+e. Find the reverse of given string.
+---------------------------------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Operations</title>
+</head>
+<body>
+    <h1>String Operations</h1>
+    <form method="post" action="15-sting.php">
+        <label for="input_string">Enter a string:</label>
+        <input type="text" id="input_string" name="input_string" required><br>
+
+        <label>Select an operation:</label><br>
+        <input type="radio" id="operation_first_five_words" name="operation" value="first_five_words">
+        <label for="operation_first_five_words">Select first 5 words and display the five characters</label><br>
+
+        <input type="radio" id="operation_lowercase" name="operation" value="lowercase">
+        <label for="operation_lowercase">Convert to lowercase</label><br>
+
+        <input type="radio" id="operation_title_case" name="operation" value="title_case">
+        <label for="operation_title_case">Convert to Title case</label><br>
+
+        <input type="radio" id="operation_pad" name="operation" value="pad">
+        <label for="operation_pad">Pad with '*' from left and right</label><br>
+
+        <input type="radio" id="operation_remove_whitespace" name="operation" value="remove_whitespace">
+        <label for="operation_remove_whitespace">Remove leading whitespaces</label><br>
+
+        <input type="radio" id="operation_reverse" name="operation" value="reverse">
+        <label for="operation_reverse">Find the reverse of the string</label><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Operations Result</title>
+</head>
+<body>
+    <h1>String Operations Result</h1>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        
+        $input_string = $_POST["input_string"];
+        
+       
+       $selected_operation = $_POST["operation"];
+        
+       
+        switch ($selected_operation) {
+            case "first_five_words":
+                $words = explode(" ", $input_string);
+                $first_five_words = implode(" ", array_slice($words, 0, 5));
+                $first_five_characters = substr($input_string, 0, 5);
+                echo "<p>First 5 words: $first_five_words</p>";
+                echo "<p>First 5 characters: $first_five_characters</p>";
+                break;
+            case "lowercase":
+                $lowercase_string = strtolower($input_string);
+                echo "<p>Lowercase: $lowercase_string</p>";
+                break;
+            case "title_case":
+                $title_case_string = ucwords($input_string);
+                echo "<p>Title case: $title_case_string</p>";
+                break;
+            case "pad":
+                $padded_string = "*" . $input_string . "*";
+                echo "<p>Padded with '*': $padded_string</p>";
+                break;
+            case "remove_whitespace":
+                $trimmed_string = str_replace(" ","",$input_string);
+                echo "<p>Leading whitespaces removed: $trimmed_string</p>";
+                break;
+            case "reverse":
+                $reversed_string = strrev($input_string);
+                echo "<p>Reversed string: $reversed_string</p>";
+                break;
+        }
+    }
+    ?>
+</body>
+</html>
